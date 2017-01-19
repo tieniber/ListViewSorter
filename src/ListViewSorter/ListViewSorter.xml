@@ -1,15 +1,35 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<widget id="ListViewSorter.widget.ListViewSorter" needsEntityContext="true" xmlns="http://www.mendix.com/widget/1.0/">
+<widget id="ListViewSorter.widget.ListViewSorter" needsEntityContext="false" xmlns="http://www.mendix.com/widget/1.0/">
     <name>ListViewSorter</name>
     <description>The description of this widget.</description>
 
     <icon />
 
     <properties>
-        <property key="dummyKey" type="string" required="false" defaultValue="">
-            <caption>Dummy key</caption>
-            <category>Appearance</category>
-            <description>This key was added to make the widget work in the Modeler (needs atleast 1 key). Please change/remove this one</description>
+        <property key="targetListViewName" type="string" required="true" defaultValue="">
+            <caption>List View Name</caption>
+            <category>Behavior</category>
+            <description>The name of the list view to target</description>
         </property>
+		<property key="listViewEntity" type="entity" required="true" >
+            <caption>List View Entity</caption>
+            <category>Behavior</category>
+            <description>The type of objects in the </description>
+        </property>
+		<property key="sortAttribute" type="attribute" entityProperty="listViewEntity" allowNonPersistableEntities="true" required="true">
+			<caption>Sorting Attribute</caption>
+			<category>Behavior</category>
+			<description>The attribute to sort on the grid.</description>
+			<attributeTypes>
+				<attributeType name="Enum"/>
+				<attributeType name="String"/>
+				<attributeType name="Integer"/>
+				<attributeType name="Decimal"/>
+				<attributeType name="Boolean"/>
+				<attributeType name="DateTime"/>
+				<attributeType name="Long"/>
+				<attributeType name="AutoNumber"/>
+			</attributeTypes>
+		</property>
     </properties>
 </widget>
