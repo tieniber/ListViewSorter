@@ -14,14 +14,14 @@ define([
     "dojo/text",
     "dojo/html",
     "dojo/_base/event",
-	"dojo/on",
-	"dojo/query",
+    "dojo/on",
+    "dojo/query",
 
     "dojo/text!ListViewSorter/widget/template/ListViewSorter.html"
-], function (declare, _WidgetBase, _TemplatedMixin, dom, dojoDom, dojoProp, dojoGeometry, dojoClass, dojoStyle, dojoConstruct, dojoArray, dojoLang, dojoText, dojoHtml, dojoEvent, on, dojoQuery, widgetTemplate) {
+], function(declare, _WidgetBase, _TemplatedMixin, dom, dojoDom, dojoProp, dojoGeometry, dojoClass, dojoStyle, dojoConstruct, dojoArray, dojoLang, dojoText, dojoHtml, dojoEvent, on, dojoQuery, widgetTemplate) {
     "use strict";
 
-    return declare("ListViewSorter.widget.ListViewSorter", [ _WidgetBase, _TemplatedMixin ], {
+    return declare("ListViewSorter.widget.ListViewSorter", [_WidgetBase, _TemplatedMixin], {
 
         templateString: widgetTemplate,
 
@@ -31,64 +31,64 @@ define([
         // Internal variables.
         _handles: null,
         _contextObj: null,
-		_currentSortDirection: null,
+        _currentSortDirection: null,
 
-		//modeler variables,
-		sortAttribute: "",
-		listViewEntity: "",
-		targetListViewName: "",
+        //modeler variables,
+        sortAttribute: "",
+        listViewEntity: "",
+        targetListViewName: "",
 
-        constructor: function () {
+        constructor: function() {
             this._handles = [];
         },
 
-        postCreate: function () {
+        postCreate: function() {
             logger.debug(this.id + ".postCreate");
 
-			on(this.listViewSortButton, "click", dojoLang.hitch(this, this._doClick));
+            on(this.listViewSortButton, "click", dojoLang.hitch(this, this._doClick));
 
         },
 
-        update: function (obj, callback) {
+        update: function(obj, callback) {
             logger.debug(this.id + ".update");
 
             this._contextObj = obj;
 
-			//find the list view
+            //find the list view
 
             this._updateRendering(callback);
         },
 
-        resize: function (box) {
-          logger.debug(this.id + ".resize");
+        resize: function(box) {
+            logger.debug(this.id + ".resize");
         },
 
-        uninitialize: function () {
-          logger.debug(this.id + ".uninitialize");
+        uninitialize: function() {
+            logger.debug(this.id + ".uninitialize");
         },
 
-        _updateRendering: function (callback) {
+        _updateRendering: function(callback) {
             logger.debug(this.id + "._updateRendering");
 
             mendix.lang.nullExec(callback);
         },
 
-		_doClick: function(e) {
-			var lvNode = dojoQuery(".mx-name-" + this.targetListViewName)[0];
-			if (lvNode) {
-				var lvWidget = dijit.registry.byNode(lvNode);
-				if (lvWidget) {
-					lvWidget.sort = [[this.sortAttribute, "asc"]];
-					lvWidget._datasource._sorting = [[this.sortAttribute, "asc"]]; //Fix for Mx5.19, not needed in 6.10 (or so it seems)
-					lvWidget.update();
-				}
-				else {
-					console.log("Found a list view node but not the widget.");
-				}
-			} else {
-				console.log("Could not find the list view node.");
-			}
-		}
+        _doClick: function(e) {
+            // e.preventDefault();
+            var lvNode = dojoQuery(".mx-name-" + this.targetListViewName)[0];
+            if (lvNode) {
+                var lvWidget = dijit.registry.byNode(lvNode);
+                if (lvWidget) {
+                    lvWidget.sort = [[this.sortAttribute, "asc"]];
+                    lvWidget._datasource._sorting = [[this.sortAttribute, "asc"]]; //Fix for Mx5.19, not needed in 6.10 (or so it seems)
+                    lvWidget.update();
+                } else {
+                    console.log("Found a list view node but not the widget.");
+                }
+            } else {
+                console.log("Could not find the list view node.");
+            }
+        }
     });
 });
 
