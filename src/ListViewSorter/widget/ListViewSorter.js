@@ -46,7 +46,6 @@ define([
             logger.debug(this.id + ".postCreate");
 
             on(this.listViewSortButton, "click", dojoLang.hitch(this, this._doClick));
-
         },
 
         update: function(obj, callback) {
@@ -69,25 +68,61 @@ define([
 
         _updateRendering: function(callback) {
             logger.debug(this.id + "._updateRendering");
+            dojoClass.add(this.listViewSortButton.parentElement, "sort-header");
+            this._setSort(this.listViewSortButton, this._currentSortDirection);
 
             mendix.lang.nullExec(callback);
         },
-
+        _toggleDirection: function(){
+          this._currentSortDirection
+            ? this._currentSortDirection == "asc"
+              ? this._currentSortDirection = "desc"
+              : this._currentSortDirection = "asc"
+            : this._currentSortDirection = "asc";
+        },
         _doClick: function(e) {
             // e.preventDefault();
+            this._toggleDirection();
             var lvNode = dojoQuery(".mx-name-" + this.targetListViewName)[0];
             if (lvNode) {
                 var lvWidget = dijit.registry.byNode(lvNode);
                 if (lvWidget) {
-                    lvWidget.sort = [[this.sortAttribute, "asc"]];
-                    lvWidget._datasource._sorting = [[this.sortAttribute, "asc"]]; //Fix for Mx5.19, not needed in 6.10 (or so it seems)
+                    lvWidget.sort = [[this.sortAttribute, this._currentSortDirection]];
+                    lvWidget._datasource._sorting = [[this.sortAttribute, this._currentSortDirection]]; //Fix for Mx5.19, not needed in 6.10 (or so it seems)
                     lvWidget.update();
+                    this._updateRendering();
+                    this._resetOtherWidgetsRendering();
                 } else {
                     console.log("Found a list view node but not the widget.");
                 }
             } else {
                 console.log("Could not find the list view node.");
             }
+        },
+        _resetOtherWidgetsRendering: function(){
+          var others = document.querySelectorAll('.listViewSorter:not(.sort-none)');
+          var self = this;
+          others.forEach(function(el){
+            if (el === self.listViewSortButton) return;
+            self._setSort(el, null);
+          });
+        },
+        _setSort: function(el, dir){
+          if (dir == "asc"){
+            dojoClass.add(el, "sort-asc");
+            dojoClass.remove(el, "sort-desc");
+            dojoClass.remove(el, "sort-none");
+          }
+          else if (dir == "desc"){
+            dojoClass.remove(el, "sort-asc");
+            dojoClass.add(el, "sort-desc");
+            dojoClass.remove(el, "sort-none");
+          }
+          else {
+            dojoClass.remove(el, "sort-asc");
+            dojoClass.remove(el, "sort-desc");
+            dojoClass.add(el, "sort-none");
+          }
         }
     });
 });

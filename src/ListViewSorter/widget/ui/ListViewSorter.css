@@ -1,3 +1,17 @@
-.widgetname {
-
+.listViewSorter {
+  /*color: #a9a9a9;*/
+}
+.sort-header {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.sort-asc::after {
+  content:": \25B2"
+}
+.sort-desc::after {
+  content:": \25BC"
+}
+.sort-none::after {
+  content:": \2014";
 }
