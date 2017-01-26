@@ -37,6 +37,8 @@ define([
         sortAttribute: "",
         listViewEntity: "",
         targetListViewName: "",
+		headerLabel: "",
+		headerClass: "",
 
         constructor: function() {
             this._handles = [];
@@ -45,7 +47,7 @@ define([
         postCreate: function() {
             logger.debug(this.id + ".postCreate");
 
-            on(this.listViewSortButton, "click", dojoLang.hitch(this, this._doClick));
+            on(this.listViewSortDiv, "click", dojoLang.hitch(this, this._doClick));
         },
 
         update: function(obj, callback) {
@@ -68,8 +70,10 @@ define([
 
         _updateRendering: function(callback) {
             logger.debug(this.id + "._updateRendering");
-            dojoClass.add(this.listViewSortButton.parentElement, "sort-header");
-            this._setSort(this.listViewSortButton, this._currentSortDirection);
+            dojoClass.add(this.listViewSortDiv, "sort-header");
+			dojoClass.add(this.headerLabelSpan, this.headerClass);
+            this._setSort(this.sortSpan, this._currentSortDirection);
+			this.headerLabelSpan.innerHTML = this.headerLabel;
 
             mendix.lang.nullExec(callback);
         },
@@ -100,20 +104,20 @@ define([
             }
         },
         _resetOtherWidgetsRendering: function(){
-          var others = document.querySelectorAll('.listViewSorter:not(.sort-none)');
+          var others = document.querySelectorAll('.listViewSorter .sortIcon:not(.sort-none)');
           var self = this;
           others.forEach(function(el){
-            if (el === self.listViewSortButton) return;
+            if (el === self.sortSpan) return;
             self._setSort(el, null);
           });
         },
         _setSort: function(el, dir){
-          if (dir == "asc"){
+          if (dir === "asc"){
             dojoClass.add(el, "sort-asc");
             dojoClass.remove(el, "sort-desc");
             dojoClass.remove(el, "sort-none");
           }
-          else if (dir == "desc"){
+          else if (dir === "desc"){
             dojoClass.remove(el, "sort-asc");
             dojoClass.add(el, "sort-desc");
             dojoClass.remove(el, "sort-none");

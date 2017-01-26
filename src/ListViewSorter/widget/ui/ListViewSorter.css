@@ -7,11 +7,11 @@
   justify-content:space-between;
 }
 .sort-asc::after {
-  content:": \25B2"
+  content:"\25B2"
 }
 .sort-desc::after {
-  content:": \25BC"
+  content:"\25BC"
 }
 .sort-none::after {
-  content:": \2014";
+  content:"";
 }

@@ -6,6 +6,16 @@
     <icon />
 
     <properties>
+		<property key="headerLabel" type="string" required="true" defaultValue="My Header">
+            <caption>Header Label</caption>
+            <category>Appearance</category>
+            <description>The label for this header.</description>
+        </property>
+		<property key="headerClass" type="string" required="false" defaultValue="">
+            <caption>Header CSS Class</caption>
+            <category>Appearance</category>
+            <description>Zero or more CSS classes to apply to the header label. Uses spaces to separate.</description>
+        </property>
         <property key="targetListViewName" type="string" required="true" defaultValue="">
             <caption>List View Name</caption>
             <category>Behavior</category>
