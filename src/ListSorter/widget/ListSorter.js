@@ -17,11 +17,11 @@ define([
     "dojo/on",
     "dojo/query",
 
-    "dojo/text!ListViewSorter/widget/template/ListViewSorter.html"
+    "dojo/text!ListSorter/widget/template/ListSorter.html"
 ], function(declare, _WidgetBase, _TemplatedMixin, dom, dojoDom, dojoProp, dojoGeometry, dojoClass, dojoStyle, dojoConstruct, dojoArray, dojoLang, dojoText, dojoHtml, dojoEvent, on, dojoQuery, widgetTemplate) {
     "use strict";
 
-    return declare("ListViewSorter.widget.ListViewSorter", [_WidgetBase, _TemplatedMixin], {
+    return declare("ListSorter.widget.ListSorter", [_WidgetBase, _TemplatedMixin], {
 
         templateString: widgetTemplate,
 
@@ -35,8 +35,8 @@ define([
 
         //modeler variables,
         sortAttribute: "",
-        listViewEntity: "",
-        targetListViewName: "",
+        listEntity: "",
+        targetListName: "",
 		headerLabel: "",
 		headerClass: "",
 
@@ -47,7 +47,7 @@ define([
         postCreate: function() {
             logger.debug(this.id + ".postCreate");
 
-            on(this.listViewSortDiv, "click", dojoLang.hitch(this, this._doClick));
+            on(this.listSortDiv, "click", dojoLang.hitch(this, this._doClick));
         },
 
         update: function(obj, callback) {
@@ -70,7 +70,7 @@ define([
 
         _updateRendering: function(callback) {
             logger.debug(this.id + "._updateRendering");
-            dojoClass.add(this.listViewSortDiv, "sort-header");
+            dojoClass.add(this.listSortDiv, "sort-header");
 			dojoClass.add(this.headerLabelSpan, this.headerClass);
             this._setSort(this.sortSpan, this._currentSortDirection);
 			this.headerLabelSpan.innerHTML = this.headerLabel;
@@ -87,13 +87,19 @@ define([
         _doClick: function(e) {
             // e.preventDefault();
             this._toggleDirection();
-            var lvNode = dojoQuery(".mx-name-" + this.targetListViewName)[0];
-            if (lvNode) {
-                var lvWidget = dijit.registry.byNode(lvNode);
-                if (lvWidget) {
-                    lvWidget.sort = [[this.sortAttribute, this._currentSortDirection]];
-                    lvWidget._datasource._sorting = [[this.sortAttribute, this._currentSortDirection]]; //Fix for Mx5.19, not needed in 6.10 (or so it seems)
-                    lvWidget.update();
+            var listNode = dojoQuery(".mx-name-" + this.targetListName)[0];
+            if (listNode) {
+                var listWidget = dijit.registry.byNode(listNode);
+                if (listWidget) {
+					var datasourceRef = listWidget._datasource || listWidget._dataSource;
+
+					listWidget.sort = [[this.sortAttribute, this._currentSortDirection]];
+                    datasourceRef._sorting = [[this.sortAttribute, this._currentSortDirection]]; //Fix for Mx5.19, not needed in 6.10 (or so it seems)
+                    if (listWidget.update) {
+						listWidget.update();
+					} else {
+						listWidget.reload();
+					}
                     this._updateRendering();
                     this._resetOtherWidgetsRendering();
                 } else {
@@ -104,7 +110,7 @@ define([
             }
         },
         _resetOtherWidgetsRendering: function(){
-          var others = document.querySelectorAll('.listViewSorter .sortIcon:not(.sort-none)');
+          var others = document.querySelectorAll('.listSorter .sortIcon:not(.sort-none)');
           var self = this;
           others.forEach(function(el){
             if (el === self.sortSpan) return;
@@ -131,4 +137,4 @@ define([
     });
 });
 
-require(["ListViewSorter/widget/ListViewSorter"]);
+require(["ListSorter/widget/ListSorter"]);

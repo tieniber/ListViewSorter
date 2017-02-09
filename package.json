@@ -1,7 +1,7 @@
 {
-  "name": "ListViewSorter",
+  "name": "ListSorter",
   "version": "1.0.0",
-  "description": "Add sorting headers to your list view!",
+  "description": "Add sorting headers to your list view or template grid!",
   "license": "Apache 2",
   "author": "Eric Tieniber",
   "private": true,

@@ -1,10 +1,11 @@
-.listViewSorter {
+.listSorter {
   /*color: #a9a9a9;*/
 }
 .sort-header {
   display:flex;
   align-items:center;
   justify-content:space-between;
+  cursor: pointer;
 }
 .sort-asc::after {
   content:"\25B2"

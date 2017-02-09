@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<widget id="ListViewSorter.widget.ListViewSorter" needsEntityContext="false" xmlns="http://www.mendix.com/widget/1.0/">
-    <name>ListViewSorter</name>
-    <description>The description of this widget.</description>
+<widget id="ListSorter.widget.ListSorter" needsEntityContext="false" xmlns="http://www.mendix.com/widget/1.0/">
+    <name>ListSorter</name>
+    <description>Add a header to your list view or template grid with interactive sorting on click.</description>
 
     <icon />
 
@@ -16,17 +16,17 @@
             <category>Appearance</category>
             <description>Zero or more CSS classes to apply to the header label. Uses spaces to separate.</description>
         </property>
-        <property key="targetListViewName" type="string" required="true" defaultValue="">
-            <caption>List View Name</caption>
+        <property key="targetListName" type="string" required="true" defaultValue="">
+            <caption>List Widget Name</caption>
             <category>Behavior</category>
-            <description>The name of the list view to target</description>
+            <description>The name of the list view or template grid to target</description>
         </property>
-		<property key="listViewEntity" type="entity" required="true" >
-            <caption>List View Entity</caption>
+		<property key="listEntity" type="entity" required="true" >
+            <caption>List Entity</caption>
             <category>Behavior</category>
-            <description>The type of objects in the </description>
+            <description>The type of objects in the list.</description>
         </property>
-		<property key="sortAttribute" type="attribute" entityProperty="listViewEntity" allowNonPersistableEntities="true" required="true">
+		<property key="sortAttribute" type="attribute" entityProperty="listEntity" allowNonPersistableEntities="true" required="true">
 			<caption>Sorting Attribute</caption>
 			<category>Behavior</category>
 			<description>The attribute to sort on the grid.</description>
