@@ -23,6 +23,8 @@ This widget renders a clickable control that will toggle the sort on a specified
 
 Sort listviews!
 
+### [Video](https://www.useloom.com/share/cb19de6ef6114ac8b72cb72621c8f694)
+
 ### Known Limitations
 
 ###### Based on the Mendix Widget Boilerplate
