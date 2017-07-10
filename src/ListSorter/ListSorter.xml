@@ -28,10 +28,20 @@ iVBORw0KGgoAAAANSUhEUgAAAesAAAGNCAIAAAC+PM6xAAAAAXNSR0IArs4c6QAAAAlwSFlzAAALEwAA
             <category>Behavior</category>
             <description>The type of objects in the list.</description>
         </property>
-		<property key="sortAttribute" type="attribute" entityProperty="listEntity" allowNonPersistableEntities="true" required="true">
-			<caption>Sorting Attribute</caption>
+		<property key="defaultSort" type="enumeration" defaultValue="no">
+			<caption>Default sort</caption>
 			<category>Behavior</category>
-			<description>The attribute to sort on the grid.</description>
+			<description>Whether this widget should enforce sorting on the grid immediately. Only one of the widgets on the page should set the default sort order.</description>
+			<enumerationValues>
+                <enumerationValue key="no">No</enumerationValue>
+                <enumerationValue key="asc">Ascending</enumerationValue>
+				<enumerationValue key="desc">Descending</enumerationValue>
+            </enumerationValues>
+		</property>
+		<property key="sortAttribute" type="attribute" entityProperty="listEntity" allowNonPersistableEntities="true" required="false">
+			<caption>Sorting Attribute</caption>
+			<category>Primary sort</category>
+			<description>(Optional) The attribute to sort on the grid.</description>
 			<attributeTypes>
 				<attributeType name="Enum"/>
 				<attributeType name="String"/>
@@ -43,5 +53,113 @@ iVBORw0KGgoAAAANSUhEUgAAAesAAAGNCAIAAAC+PM6xAAAAAXNSR0IArs4c6QAAAAlwSFlzAAALEwAA
 				<attributeType name="AutoNumber"/>
 			</attributeTypes>
 		</property>
+		<property key="sortEntityPath" type="entity" required="false" entityProperty="listEntity" isPath="yes" pathType="reference">
+            <caption>Sort Entity (ref)</caption>
+            <category>Primary sort</category>
+            <description>(OPTIONAL) The entity containing the attribute to sort.</description>
+        </property>
+		<property key="sortAttributePath" type="attribute" entityProperty="sortEntityPath" required="false">
+			<caption>Sort Attribute (ref)</caption>
+			<category>Primary sort</category>
+			<description>(OPTIONAL) The attribute to sort on the grid.</description>
+			<attributeTypes>
+				<attributeType name="Enum"/>
+				<attributeType name="String"/>
+				<attributeType name="Integer"/>
+				<attributeType name="Decimal"/>
+				<attributeType name="Boolean"/>
+				<attributeType name="DateTime"/>
+				<attributeType name="Long"/>
+				<attributeType name="AutoNumber"/>
+			</attributeTypes>
+		</property>
+		<property key="refsetPath" type="entity" required="false" entityProperty="listEntity" isPath="yes" pathType="referenceSet">
+			<caption>Sort Entity (refset)</caption>
+			<category>Primary sort</category>
+			<description>(OPTIONAL) The entity containing the attribute to sort.</description>
+		</property>
+		<property key="sortAttributePath2" type="attribute" entityProperty="refsetPath" required="false">
+			<caption>Sort Attribute (refset)</caption>
+			<category>Primary sort</category>
+			<description>(OPTIONAL) The attribute to sort on the grid.</description>
+			<attributeTypes>
+				<attributeType name="Enum"/>
+				<attributeType name="String"/>
+				<attributeType name="Integer"/>
+				<attributeType name="Decimal"/>
+				<attributeType name="Boolean"/>
+				<attributeType name="DateTime"/>
+				<attributeType name="Long"/>
+				<attributeType name="AutoNumber"/>
+			</attributeTypes>
+		</property>
+
+		<!-- secondary sort-->
+		<property key="secSortOrder" type="enumeration" defaultValue="asc">
+			<caption>Sec sort order</caption>
+			<category>Secondary sort</category>
+			<description>Whether the secondary sort should be ascending or descending.</description>
+			<enumerationValues>
+				<enumerationValue key="asc">Ascending</enumerationValue>
+				<enumerationValue key="desc">Descending</enumerationValue>
+			</enumerationValues>
+		</property>
+		<property key="secSortAttribute" type="attribute" entityProperty="listEntity" allowNonPersistableEntities="true" required="false">
+			<caption>Sec Sorting Attribute</caption>
+			<category>Secondary sort</category>
+			<description>(OPTIONAL) A secondary sort attribute (i.e. sort by Color then Name)</description>
+			<attributeTypes>
+				<attributeType name="Enum"/>
+				<attributeType name="String"/>
+				<attributeType name="Integer"/>
+				<attributeType name="Decimal"/>
+				<attributeType name="Boolean"/>
+				<attributeType name="DateTime"/>
+				<attributeType name="Long"/>
+				<attributeType name="AutoNumber"/>
+			</attributeTypes>
+		</property>
+
+		<property key="secSortEntityPath" type="entity" required="false" entityProperty="listEntity" isPath="yes" pathType="reference">
+            <caption>Sec Sort Entity</caption>
+            <category>Secondary sort</category>
+            <description>(OPTIONAL) The entity containing the attribute to sort.</description>
+        </property>
+		<property key="secSortAttributePath" type="attribute" entityProperty="secSortEntityPath" required="false">
+			<caption>Sec Sort Attribute</caption>
+			<category>Secondary sort</category>
+			<description>(OPTIONAL) The attribute to sort on the grid.</description>
+			<attributeTypes>
+				<attributeType name="Enum"/>
+				<attributeType name="String"/>
+				<attributeType name="Integer"/>
+				<attributeType name="Decimal"/>
+				<attributeType name="Boolean"/>
+				<attributeType name="DateTime"/>
+				<attributeType name="Long"/>
+				<attributeType name="AutoNumber"/>
+			</attributeTypes>
+		</property>
+		<property key="secRefsetPath" type="entity" required="false" entityProperty="listEntity" isPath="yes" pathType="referenceSet">
+			<caption>Sec Sort Entity (refset)</caption>
+			<category>Secondary sort</category>
+			<description>(OPTIONAL) The entity containing the attribute to sort.</description>
+		</property>
+		<property key="secSortAttributePath2" type="attribute" entityProperty="secRefsetPath" required="false">
+			<caption>Sec Attribute (refset)</caption>
+			<category>Secondary sort</category>
+			<description>(OPTIONAL) The attribute to sort on the grid.</description>
+			<attributeTypes>
+				<attributeType name="Enum"/>
+				<attributeType name="String"/>
+				<attributeType name="Integer"/>
+				<attributeType name="Decimal"/>
+				<attributeType name="Boolean"/>
+				<attributeType name="DateTime"/>
+				<attributeType name="Long"/>
+				<attributeType name="AutoNumber"/>
+			</attributeTypes>
+		</property>
+
     </properties>
 </widget>

@@ -2,6 +2,7 @@ define([
     "dojo/_base/declare",
     "mxui/widget/_WidgetBase",
     "dijit/_TemplatedMixin",
+	"mxui/mixin/_Stateful",
     "mxui/dom",
     "dojo/dom",
     "dojo/dom-prop",
@@ -18,20 +19,20 @@ define([
     "dojo/query",
 
     "dojo/text!ListSorter/widget/template/ListSorter.html"
-], function(declare, _WidgetBase, _TemplatedMixin, dom, dojoDom, dojoProp, dojoGeometry, dojoClass, dojoStyle, dojoConstruct, dojoArray, dojoLang, dojoText, dojoHtml, dojoEvent, on, dojoQuery, widgetTemplate) {
+], function(declare, _WidgetBase, _TemplatedMixin, _StatefulMixin, dom, dojoDom, dojoProp, dojoGeometry, dojoClass, dojoStyle, dojoConstruct, dojoArray, dojoLang, dojoText, dojoHtml, dojoEvent, on, dojoQuery, widgetTemplate) {
     "use strict";
 
-    return declare("ListSorter.widget.ListSorter", [_WidgetBase, _TemplatedMixin], {
+    return declare("ListSorter.widget.ListSorter", [_WidgetBase, _TemplatedMixin, _StatefulMixin], {
 
         templateString: widgetTemplate,
-
-
         widgetBase: null,
 
         // Internal variables.
         _handles: null,
         _contextObj: null,
-        _currentSortDirection: null,
+        _currentSortDirection: "",
+        _previousSortDirection: "",
+		_secondarySortArray: null,
 
         //modeler variables,
         sortAttribute: "",
@@ -39,15 +40,49 @@ define([
         targetListName: "",
 		headerLabel: "",
 		headerClass: "",
+		defaultSort: "",
+
+		sortEntityPath: "",
+		sortAttributePath: "",
+
+		//an array of other active sorting widgets
+		_sortingWidgets: {},
+		_disableDefaultSort:{},
 
         constructor: function() {
             this._handles = [];
+			this._secondarySortArray = [];
         },
 
         postCreate: function() {
             logger.debug(this.id + ".postCreate");
 
+			if(this._sortingWidgets[this.mxform.hash]) {
+				this._sortingWidgets[this.mxform.hash].push(this);
+			} else {
+				this._sortingWidgets[this.mxform.hash] = [this];
+			}
+
             on(this.listSortDiv, "click", dojoLang.hitch(this, this._doClick));
+
+			//set up secondary sort string
+			if (this.secSortAttribute) {
+				this._secondarySortArray = [this.secSortAttribute, this.secSortOrder];
+			} else if (this.secSortEntityPath) {
+				this._secondarySortArray = [this.secSortEntityPath+"/"+this.secSortAttributePath, this.secSortOrder];
+			} else if (this.secRefsetPath) {
+				this._secondarySortArray = [this.secRefsetPath+"/"+this.secSortAttributePath2, this.secSortOrder];
+			}
+
+			//retrieve state (if available)
+			this._previousSortDirection = this.getState("sortDirection", "");
+			if (this._previousSortDirection !== "") {
+				this._currentSortDirection = this._previousSortDirection;
+				this.defaultSort = "no";
+				this._disableDefaultSort[this.mxform.hash] = true;
+				//this._disableDefaultSort = {disable:true};
+				this._setSort(this.sortSpan, this._currentSortDirection);
+			}
         },
 
         update: function(obj, callback) {
@@ -55,8 +90,15 @@ define([
 
             this._contextObj = obj;
 
-            //find the list view
-
+			//set default sort
+			if(!this._disableDefaultSort[this.mxform.hash]) {
+				if(this.defaultSort === "asc") {
+					this._doClick();
+				} else if (this.defaultSort === "desc") {
+					this._toggleDirection();
+					this._doClick();
+				}
+			}
             this._updateRendering(callback);
         },
 
@@ -67,6 +109,9 @@ define([
         uninitialize: function() {
             logger.debug(this.id + ".uninitialize");
         },
+		storeState: function(t) {
+			t("sortDirection", this._currentSortDirection);
+		},
 
         _updateRendering: function(callback) {
             logger.debug(this.id + "._updateRendering");
@@ -75,7 +120,9 @@ define([
             this._setSort(this.sortSpan, this._currentSortDirection);
 			this.headerLabelSpan.innerHTML = this.headerLabel;
 
-            mendix.lang.nullExec(callback);
+            if(callback) {
+				callback();
+			}
         },
         _toggleDirection: function(){
           this._currentSortDirection
@@ -93,9 +140,26 @@ define([
                 if (listWidget) {
 					var datasourceRef = listWidget._datasource || listWidget._dataSource;
 
-					listWidget.sort = [[this.sortAttribute, this._currentSortDirection]];
-                    datasourceRef._sorting = [[this.sortAttribute, this._currentSortDirection]]; //Fix for Mx5.19, not needed in 6.10 (or so it seems)
-                    if (listWidget.update) {
+					//primary sorting
+					var tempSortArray = [];
+					if (this.sortAttribute) {
+						tempSortArray = [[this.sortAttribute, this._currentSortDirection]];
+					} else if (this.sortEntityPath) {
+						tempSortArray = [[this.sortEntityPath+"/" +this.sortAttributePath, this._currentSortDirection]];
+					} else if (this.refsetPath) {
+						tempSortArray = [[this.refsetPath+"/" +this.sortAttributePath2, this._currentSortDirection]];
+					}
+
+					//secondary sorting
+					if(this._secondarySortArray.length > 0) {
+						tempSortArray.push(this._secondarySortArray);
+					}
+
+					listWidget.sort = tempSortArray;
+					datasourceRef._sorting = tempSortArray;
+
+					//upate the grid
+					if (listWidget.update) {
 						listWidget.update();
 					} else {
 						listWidget.reload();
@@ -110,12 +174,13 @@ define([
             }
         },
         _resetOtherWidgetsRendering: function(){
-          var others = document.querySelectorAll('.listSorter .sortIcon:not(.sort-none)');
-          var self = this;
-          others.forEach(function(el){
-            if (el === self.sortSpan) return;
-            self._setSort(el, null);
-          });
+		  var others = this._sortingWidgets[this.mxform.hash];
+
+		  for(var i=0; i<others.length; i++) {
+			  var other = others[i];
+			  if (other === this) continue;
+              other._setSort(other.sortSpan, "");
+		  }
         },
         _setSort: function(el, dir){
           if (dir === "asc"){
@@ -132,6 +197,7 @@ define([
             dojoClass.remove(el, "sort-asc");
             dojoClass.remove(el, "sort-desc");
             dojoClass.add(el, "sort-none");
+			this._currentSortDirection = "";
           }
         }
     });

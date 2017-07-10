@@ -6,11 +6,12 @@ test/theme/
 test/userlib/
 test/.classpath
 test/.project
-test/resources/
 *.launch
 *.tmp
 *.lock
 .idea/
+
+dist/
 
 node_modules/
 .editorconfig

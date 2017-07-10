@@ -1,12 +1,11 @@
 {
   "name": "ListSorter",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Add sorting headers to your list view or template grid!",
   "license": "Apache 2",
   "author": "Eric Tieniber",
   "private": true,
   "dependencies": {
-    "gulp": "^3.9.1"
   },
   "devDependencies": {
     "del": "^2.2.2",
